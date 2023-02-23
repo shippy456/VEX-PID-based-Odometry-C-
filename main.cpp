@@ -57,17 +57,18 @@ std::array<std::pair<double, double>, 3> targets = {{{10,45}, {12,49},{22,90}}};
 
 // The main loop
 int main() {
+sensor.calibrate();  
 
   //index of current target
   int target_index = 0;
-
+  
     while (target_index < targets.size()) {
         // Read the gyro value
         double angle = sensor.heading(degrees);
-
+        
         // Read the encoder values
-        int left_ticks = left_encoder.position(rotationUnits::deg);
-        int right_ticks = right_encoder.position(rotationUnits::deg);
+        int left_ticks = left_encoder.position(degrees);
+        int right_ticks = right_encoder.position(degrees);
         Brain.Screen.print("Left_Ticks:"); 
         Brain.Screen.print(left_ticks);
         Brain.Screen.newLine(); 
@@ -78,8 +79,8 @@ int main() {
         //double pid_output = KP * error + KI * (error + error) + KD * (error - error);
 
         // Calculate the odometry
-        double left_distance = left_ticks * WHEEL_RADIUS * (2 * M_PI) / 360.0;
-        double right_distance = right_ticks * WHEEL_RADIUS * (2 * M_PI) / 360.0;
+        double left_distance = left_ticks * (M_PI/180) * encoder_wheel_radius;
+        double right_distance = right_ticks * (M_PI/180) * encoder_wheel_radius;
         double distance = (left_distance + right_distance) / 2.0;
         double theta = (right_distance - left_distance) / ((right_encoder.position(rotationUnits::deg) / (180 / M_PI) * encoder_wheel_radius) - left_encoder.position(rotationUnits::deg) / (180 / M_PI) * encoder_wheel_radius);
         double x = distance * cos(theta);
@@ -95,15 +96,20 @@ int main() {
         //calculate the speed and the direction the motors should run
         double speed = KP * error + KI * (error + error) + KD * (error - error);
         double direction = target_angle - theta;
-        //Brain.Screen.print("DIRECTION:"); 
-        //Brain.Screen.print(direction);
-        //Brain.Screen.newLine(); 
+        Brain.Screen.print("DIRECTION:"); 
+        Brain.Screen.print(direction);
+        Brain.Screen.newLine(); 
+        Brain.Screen.print("Target angle:"); 
+        Brain.Screen.print(target_angle);
+        Brain.Screen.newLine(); 
         // Drive the motors
-        left_front_motor.spin(vex::directionType::fwd, speed * cos(direction), vex::velocityUnits::pct);
-        left_back_motor.spin(vex::directionType::fwd, speed * cos(direction), vex::velocityUnits::pct);
-        right_front_motor.spin(vex::directionType::fwd, speed * cos(direction), vex::velocityUnits::pct);
-        right_back_motor.spin(vex::directionType::fwd, speed * cos(direction), vex::velocityUnits::pct);
-
+        left_front_motor.spin(vex::directionType::fwd, (speed * cos(direction)), vex::velocityUnits::pct);
+        left_back_motor.spin(vex::directionType::fwd, (speed * cos(direction)), vex::velocityUnits::pct);
+        right_front_motor.spin(vex::directionType::fwd, (speed * cos(direction)), vex::velocityUnits::pct);
+        right_back_motor.spin(vex::directionType::fwd, (speed * cos(direction)), vex::velocityUnits::pct); 
+        Brain.Screen.print("Motor input:"); 
+        Brain.Screen.print(speed * cos(direction));
+        Brain.Screen.newLine();
         //check if reached target
         if (std::abs(targets[target_index].first - x) < 0.1 && std::abs(targets[target_index].second - y) < 0.1) {
 
@@ -118,7 +124,8 @@ int main() {
 
         // Wait a bit
         vex::task::sleep(20);
-       // Brain.Screen.clearScreen(); 
+        Brain.Screen.clearScreen(); 
+        Brain.Screen.setCursor(1,1);
     }
 
     //stop motors
