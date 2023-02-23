@@ -39,7 +39,7 @@ vex::motor right_front_motor = vex::motor(vex::PORT3);
 vex::motor right_back_motor = vex::motor(vex::PORT4);
 
 // Initialize the inertial sensor
-vex::inertial sensor = vex::inertial(vex::PORT8);
+inertial sensor = inertial(PORT8);
 
 // Initialize the encoders
 //vex::encoder left_encoder = vex::encoder(vex::PORT1, vex::PORT2);
@@ -63,7 +63,7 @@ int main() {
 
     while (target_index < targets.size()) {
         // Read the gyro value
-        double angle = sensor.rotation(vex::rotationUnits::deg);
+        double angle = sensor.heading(degrees);
 
         // Read the encoder values
         int left_ticks = left_encoder.position(rotationUnits::deg);
