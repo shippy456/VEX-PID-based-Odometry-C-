@@ -90,7 +90,7 @@ sensor.calibrate();
         //Brain.Screen.newLine(); 
         //calculate the angle for the robot to face the target coordinates
         double target_angle = atan2(targets[target_index].second - y, targets[target_index].first - x);
-        double coordDistance = 
+        double coordDistance = sqrt(targets[target_index].first^2 + targets[target_index].second^2);
          //Brain.Screen.print("target angle:"); 
        // Brain.Screen.print(target_angle);
        // Brain.Screen.newLine(); 
@@ -104,10 +104,10 @@ sensor.calibrate();
         Brain.Screen.print(target_angle);
         Brain.Screen.newLine(); 
         // Drive the motors
-        left_front_motor.spin(vex::directionType::fwd, (speed * cos(direction)), vex::velocityUnits::pct);
-        left_back_motor.spin(vex::directionType::fwd, (speed * cos(direction)), vex::velocityUnits::pct);
-        right_front_motor.spin(vex::directionType::fwd, (speed * cos(direction)), vex::velocityUnits::pct);
-        right_back_motor.spin(vex::directionType::fwd, (speed * cos(direction)), vex::velocityUnits::pct); 
+        left_front_motor.spin(vex::directionType::fwd, (speed * cos(direction) * coordDistance), vex::velocityUnits::pct);
+        left_back_motor.spin(vex::directionType::fwd, (speed * cos(direction) * coordDistance), vex::velocityUnits::pct);
+        right_front_motor.spin(vex::directionType::fwd, (speed * cos(direction) * coordDistance), vex::velocityUnits::pct);
+        right_back_motor.spin(vex::directionType::fwd, (speed * cos(direction) * coordDistance), vex::velocityUnits::pct); 
         Brain.Screen.print("Motor input:"); 
         Brain.Screen.print(speed * cos(direction));
         Brain.Screen.newLine();
