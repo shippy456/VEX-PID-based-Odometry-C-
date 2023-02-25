@@ -90,7 +90,7 @@ sensor.calibrate();
         //Brain.Screen.newLine(); 
         //calculate the angle for the robot to face the target coordinates
         double target_angle = atan2(targets[target_index].second - y, targets[target_index].first - x);
-        double coordDistance = sqrt(targets[target_index].first^2 + targets[target_index].second^2);
+        double coordDistance = sqrt(pow(targets[target_index].first, 2) + pow(targets[target_index].second, 2));
          //Brain.Screen.print("target angle:"); 
        // Brain.Screen.print(target_angle);
        // Brain.Screen.newLine(); 
